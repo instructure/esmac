@@ -1,5 +1,5 @@
 // Entrypoint and primary API
-type createChecker = (rules: Rule[]) => (dependency: Dependency) => CheckResult?
+type createChecker = (rules: Rule[]) => (dependency: Dependency) => CheckResult?;
 
 // A rule for the checker to use to validate the specifiers in dependencies.
 //

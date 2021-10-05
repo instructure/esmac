@@ -1,5 +1,6 @@
 const { assert } = require('chai')
 const subject = require('esmac/specifiers/package')
+const sinon = require('sinon')
 
 describe('specifiers/package', () => {
   it('fails if package.json could not be found', () => {
@@ -13,15 +14,26 @@ describe('specifiers/package', () => {
     )
   })
 
-  it('fails if package.json "name" does not match the specified one', () => {
-    assert.notOk(
-      subject({
-        target: 'lib/a.js',
-        request: 'a'
-      }, {
-        resolve: () => ([ 'package.json', { name: 'b' } ])
-      }, {})
-    )
+  it('attempts to resolve a package.json with the specified package name', () => {
+    const resolve = sinon.spy(() => null)
+
+    subject({ target: 'lib/a.js', request: 'a' }, { resolve })
+    assert.calledWith(resolve, 'lib/a.js', 'a')
+
+    subject({ target: 'lib/a.js', request: 'a/b' }, { resolve })
+    assert.calledWith(resolve, 'lib/a.js', 'a')
+
+    subject({ target: 'lib/a.js', request: '@a/b' }, { resolve })
+    assert.calledWith(resolve, 'lib/a.js', '@a/b')
+
+    subject({ target: 'lib/a.js', request: '@a/b/c' }, { resolve })
+    assert.calledWith(resolve, 'lib/a.js', '@a/b')
+
+    assert.change({
+      fn: () => subject({ target: 'lib/a.js', request: '@a/' }, { resolve }),
+      of: () => resolve.callCount,
+      by: 0
+    })
   })
 
   it('works iff package.json was found and has the specified name', () => {

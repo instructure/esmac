@@ -20,7 +20,7 @@ describe('README.md', () => {
       source: 'lib/a.js',
       target: 'lib/b.js',
       request: './b'
-    }), [true, 0, sinon.match.any])
+    }), [true, 0])
 
     assert.match(subject({
       source: 'packages/a/lib/index.js',
@@ -55,7 +55,7 @@ describe('README.md', () => {
       source: 'lib/a.js',
       target: 'packages/foo/lib/index.js',
       request: 'foo'
-    }), [true, 1, sinon.match.any])
+    }), [true, 1])
   })
 
   it('(3) allow intra-package imports', () => {
@@ -84,13 +84,13 @@ describe('README.md', () => {
       source: 'packages/foo/lib/index.js',
       target: 'packages/foo/lib/a.js',
       request: './a'
-    }), [true, 2, sinon.match.any])
+    }), [true, 2])
 
     assert.match(subject({
       source: 'packages/foo/lib/index.js',
       target: 'packages/foo/lib/a.js',
       request: 'foo/lib/a'
-    }), [false, 2, sinon.match.any])
+    }), [false, 2])
 
     assert.match(subject({
       source: 'packages/foo/lib/index.js',
@@ -132,19 +132,19 @@ describe('README.md', () => {
       source: 'packages/foo/lib/index.js',
       target: 'packages/foo/lib/a.js',
       request: './a'
-    }), [true, 2, sinon.match.any])
+    }), [true, 2])
 
     assert.match(subject({
       source: 'packages/foo/lib/index.js',
       target: 'packages/foo/lib/a.js',
       request: 'foo/lib/a'
-    }), [false, 2, sinon.match.any])
+    }), [false, 2])
 
     assert.match(subject({
       source: 'packages/foo/lib/index.js',
       target: 'packages/bar/lib/index.js',
       request: 'bar'
-    }), [true, 3, sinon.match.any])
+    }), [true, 3])
   })
 
   it('(5) optimize', () => {
@@ -173,30 +173,30 @@ describe('README.md', () => {
       source: 'lib/a.js',
       target: 'lib/b.js',
       request: './b'
-    }), [true, 0, sinon.match.any])
+    }), [true, 0])
 
     assert.match(subject({
       source: 'lib/a.js',
       target: 'packages/foo/lib/index.js',
       request: 'foo'
-    }), [true, 2, sinon.match.any])
+    }), [true, 2])
 
     assert.match(subject({
       source: 'lib/a.js',
       target: 'packages/foo/lib/a.js',
       request: 'foo/lib/a'
-    }), [true, 2, sinon.match.any])
+    }), [true, 2])
 
     assert.match(subject({
       source: 'packages/foo/lib/index.js',
       target: 'packages/foo/lib/a.js',
       request: './a'
-    }), [true, 1, sinon.match.any])
+    }), [true, 1])
 
     assert.match(subject({
       source: 'packages/foo/lib/index.js',
       target: 'packages/bar/lib/index.js',
       request: 'bar'
-    }), [true, 2, sinon.match.any])
+    }), [true, 2])
   })
 })

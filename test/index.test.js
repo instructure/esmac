@@ -45,28 +45,6 @@ describe('esmac', () => {
     assert.calledWith(specifier, sinon.match.object, options)
   })
 
-  it("forwards the specifier's output", () => {
-    const specifier = (dependency, options, state) => {
-      state.foo = 1
-    }
-
-    const subject = esmac([
-      {
-        source: '**',
-        target: '**',
-        specifier
-      }
-    ])
-
-    const [valid, ruleIndex, ruleOutput] = subject({
-      source: 'a.js',
-      target: 'b.js',
-      request: './b'
-    })
-
-    assert.deepEqual(ruleOutput, { foo: 1 })
-  })
-
   it('returns null if no rule is applicable', () => {
     const subject = esmac([])
 

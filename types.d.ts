@@ -68,14 +68,6 @@ type PackageSpecifier = ["package", {
   ?expand: (file: Pathname) => Pathname;
 }];
 
-// Output of the "package" specifier, which contains the resolved package.json
-// filepath and its contents that were used to validate the dependency. This may
-// be useful to you in reporting.
-type PackageSpecifierOutput = {
-  pjsonFile: Pathname;
-  pjson: Object;
-};
-
 // Relative specifiers like './startup.js' or '../config.mjs'. A popular
 // choice for inter-related code, like packages.
 type RelativeSpecifier = ["relative", {}];
@@ -99,8 +91,4 @@ type CheckResult = [
 
   // index of the matching rule
   ?Number,
-
-  // output of the matching rule's specifier if any; some of them forward data
-  // here that can be used for diagnostics
-  ?Object
 ];

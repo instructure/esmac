@@ -1,151 +1,111 @@
 const { assert } = require('chai')
-const esmac = require('../lib')
+const sinon = require('sinon')
+const esmac = require('../')
 
-describe('esmac/specifiers/relative', () => {
-  const relative = require('../lib/specifiers/relative')
-
-  it('allows consumption', () => {
+describe('esmac', () => {
+  it("applies a rule's specifier", () => {
+    const specifier = sinon.spy(() => true)
     const subject = esmac([
       {
-        source: '**/*',
-        target: '**/*',
-        specifier: relative
+        source: '**',
+        target: '**',
+        specifier: [specifier]
       }
     ])
 
-    assert.deepEqual([true,0], subject({
-      source: 'foo/lib/index.js',
-      target: 'bar/lib/index.js',
-      request: '../../bar/lib/index.js'
-    }).slice(0,2))
-  })
-
-  it('allows consumption inside a boundary', () => {
-    const subject = esmac([
-      {
-        source: '**/*/*',
-        target: '**/*/*',
-        boundary: 1,
-        specifier: relative
-      }
-    ])
-
-    assert.deepEqual([true,0], subject({
-      source: 'foo/lib/a.js',
-      target: 'foo/lib/b.js',
+    const dependency = {
+      source: 'a.js',
+      target: 'b.js',
       request: './b'
-    }).slice(0,2))
+    }
+
+    const [valid] = subject(dependency)
+
+    assert.calledWith(specifier, dependency)
+    assert.equal(valid, true)
   })
 
-  it('prohibits consumption of a module outside a boundary', () => {
+  it("passes options to the specifier", () => {
+    const specifier = sinon.stub()
+    const options = {}
     const subject = esmac([
       {
-        source: '**/*/*',
-        target: '**/*/*',
-        boundary: 1,
-        specifier: relative
+        source: '**',
+        target: '**',
+        specifier: [specifier, options]
       }
     ])
 
-    assert.deepEqual([true,0], subject({
-      source: 'foo/lib/index.js',
-      target: 'bar/lib/index.js',
-      request: '../../bar/lib/index.js'
-    }).slice(0,2))
+    subject({
+      source: 'a.js',
+      target: 'b.js',
+      request: './b'
+    })
+
+    assert.calledWith(specifier, sinon.match.object, options)
   })
-})
 
-describe('esmac/specifiers/package', () => {
-  const package = require('../lib/specifiers/package')
+  it("forwards the specifier's output", () => {
+    const specifier = (dependency, options, state) => {
+      state.foo = 1
+    }
 
-  it('allows consumption', () => {
     const subject = esmac([
       {
-        source: '**/*',
+        source: '**',
+        target: '**',
+        specifier: [specifier]
+      }
+    ])
+
+    const [valid, ruleIndex, ruleOutput] = subject({
+      source: 'a.js',
+      target: 'b.js',
+      request: './b'
+    })
+
+    assert.deepEqual(ruleOutput, { foo: 1 })
+  })
+
+  it('returns null if no rule is applicable', () => {
+    const subject = esmac([])
+
+    assert.equal(subject({
+      source: 'a',
+      target: 'b',
+      request: './b'
+    }), null)
+  })
+
+  it('disqualifies a rule if boundary does not match', () => {
+    const specifier = sinon.stub()
+    const subject = esmac([
+      {
+        source: 'packages/*/**',
         target: 'packages/*/**',
-        specifier: [package, {
-          resolve: file => (['buffer',{ name: 'foo' }])
-        }]
+        boundary: 0,
+        specifier: [specifier]
       }
     ])
 
-    assert.deepEqual([true,0], subject({
-      source: 'blah.js',
-      target: 'packages/foo/lib/index.js',
-      request: 'foo'
-    }).slice(0,2))
-  })
+    assert.change({
+      fn: () => subject({
+        source: 'packages/foo/lib/index.js',
+        target: 'packages/foo/lib/a.js',
+        request: './a'
+      }),
+      of: () => specifier.callCount,
+      by: 1
+    })
 
-  it('allows consumption of deep files', () => {
-    const subject = esmac([
-      {
-        source: '**/*',
-        target: 'packages/*/**',
-        specifier: [package, {
-          resolve: file => (['buffer',{ name: 'foo' }])
-        }]
-      }
-    ])
-
-    assert.deepEqual([true,0], subject({
-      source: 'blah.js',
-      target: 'packages/foo/lib/a.js',
-      request: 'foo/lib/a.js'
-    }).slice(0,2))
-  })
-
-  it('fails if package could not be resolved', () => {
-    const subject = esmac([
-      {
-        source: '**/*',
-        target: 'packages/*/**',
-        specifier: [package, {
-          resolve: () => null
-        }]
-      }
-    ])
-
-    assert.deepEqual([false,0], subject({
-      source: 'blah.js',
-      target: 'packages/foo/lib/index.js',
-      request: 'foo'
-    }).slice(0,2))
-  })
-
-  it('fails if package name does not match the request', () => {
-    const subject = esmac([
-      {
-        source: '**/*',
-        target: 'packages/*/**',
-        specifier: [package, {
-          resolve: () => (['buffer',{ name: 'bar' }])
-        }]
-      }
-    ])
-
-    assert.deepEqual([false,0], subject({
-      source: 'blah.js',
-      target: 'packages/foo/lib/index.js',
-      request: 'foo'
-    }).slice(0,2))
-  })
-
-  it('fails if resolved package is not at the specified boundary', () => {
-    const subject = esmac([
-      {
-        source: '**/*',
-        target: 'packages/*/**',
-        specifier: [package, {
-          resolve: () => (['package.json', { name: 'foo' }]),
-          boundary: 0
-        }]
-      }
-    ])
-
-    assert.deepEqual([false,0], subject({
-      source: 'blah.js',
-      target: 'packages/foo/lib/index.js',
-      request: 'foo'
-    }).slice(0,2))
+    assert.change({
+      fn: () => subject({
+        source: 'packages/foo/lib/index.js',
+        target: 'packages/bar/lib/index.js',
+        request: 'bar/lib/index.js'
+      }),
+      of: () => specifier.callCount,
+      by: 0
+    })
   })
 })

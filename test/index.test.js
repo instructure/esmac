@@ -1,6 +1,6 @@
 const { assert } = require('chai')
 const sinon = require('sinon')
-const esmac = require('../')
+const esmac = require('..')
 
 describe('esmac', () => {
   it("applies a rule's specifier", () => {
@@ -9,7 +9,7 @@ describe('esmac', () => {
       {
         source: '**',
         target: '**',
-        specifier: [specifier]
+        specifier
       }
     ])
 
@@ -54,7 +54,7 @@ describe('esmac', () => {
       {
         source: '**',
         target: '**',
-        specifier: [specifier]
+        specifier
       }
     ])
 
@@ -84,7 +84,7 @@ describe('esmac', () => {
         source: 'packages/*/**',
         target: 'packages/*/**',
         boundary: 0,
-        specifier: [specifier]
+        specifier
       }
     ])
 

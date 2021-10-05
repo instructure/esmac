@@ -3,6 +3,11 @@
   "version": "1.0.0",
   "description": "Control access to ES modules",
   "main": "lib/index.js",
+  "exports": {
+    "./package.json": "./package.json",
+    ".": "./lib/index.js",
+    "./lib/specifiers/*.js": "./lib/specifiers/*.js"
+  },
   "scripts": {
     "test": "mocha"
   },

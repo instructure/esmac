@@ -129,4 +129,23 @@ describe('esmac/specifiers/package', () => {
       request: 'foo'
     }).slice(0,2))
   })
+
+  it('fails if resolved package is not at the specified boundary', () => {
+    const subject = esmac([
+      {
+        source: '**/*',
+        target: 'packages/*/**',
+        specifier: [package, {
+          resolve: () => (['package.json', { name: 'foo' }]),
+          boundary: 0
+        }]
+      }
+    ])
+
+    assert.deepEqual([false,0], subject({
+      source: 'blah.js',
+      target: 'packages/foo/lib/index.js',
+      request: 'foo'
+    }).slice(0,2))
+  })
 })

@@ -1,5 +1,5 @@
 const { assert } = require('chai')
-const subject = require('../../lib/specifiers/bare')
+const subject = require('esmac/specifiers/bare')
 
 describe('specifiers/bare', () => {
   it('considers foo to be bare', () => {

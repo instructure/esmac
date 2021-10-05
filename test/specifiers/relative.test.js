@@ -1,5 +1,5 @@
 const { assert } = require('chai')
-const subject = require('../../lib/specifiers/relative')
+const subject = require('esmac/specifiers/relative')
 
 describe('specifiers/relative', () => {
   it('considers . to be relative', () => {

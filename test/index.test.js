@@ -1,6 +1,6 @@
 const { assert } = require('chai')
 const sinon = require('sinon')
-const esmac = require('..')
+const esmac = require('esmac')
 
 describe('esmac', () => {
   it("applies a rule's specifier", () => {

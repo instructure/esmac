@@ -1,5 +1,5 @@
 const { assert } = require('chai')
-const subject = require('../../lib/specifiers/absolute')
+const subject = require('esmac/specifiers/absolute')
 
 describe('specifiers/absolute', () => {
   it('considers / to be absolute', () => {

@@ -1,8 +1,8 @@
 const { assert } = require('chai')
 const sinon = require('sinon')
-const esmac = require('..')
-const relative = require('../lib/specifiers/relative')
-const package = require('../lib/specifiers/package')
+const esmac = require('esmac')
+const relative = require('esmac/specifiers/relative')
+const package = require('esmac/specifiers/package')
 const path = require('path')
 const fixtureDir = path.resolve(__dirname, 'fixture')
 

@@ -1,5 +1,5 @@
 const { assert } = require('chai')
-const subject = require('../../lib/specifiers/package')
+const subject = require('esmac/specifiers/package')
 
 describe('specifiers/package', () => {
   it('fails if package.json could not be found', () => {

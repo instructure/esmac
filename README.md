@@ -55,7 +55,7 @@ Permit files under `lib/` to access other files under `lib/` and no one else:
       {
         source: "lib/**",
         target: "lib/**",
-        specifier: require("esmac/lib/relative")
+        specifier: require("esmac/specifiers/relative")
       }
     ]
 
@@ -68,7 +68,7 @@ can add another edge, going from `lib/` to `packages/` this time:
       {
         source: "lib/**",
         target: "packages/**",
-        specifier: require("esmac/lib/package")
+        specifier: require("esmac/specifiers/package")
       }
     ]
 
@@ -82,7 +82,7 @@ Third, ensure that modules of a single package import other modules of that
         source: "packages/*/**",
         target: "packages/*/**",
         boundary: 0,
-        specifier: require("esmac/lib/relative")
+        specifier: require("esmac/specifiers/relative")
       }
     ]
 
@@ -105,7 +105,7 @@ rule similar to what we did for `lib/`:
       {
         source: "**",
         target: "packages/**",
-        specifier: require("esmac/lib/package")
+        specifier: require("esmac/specifiers/package")
       }
     ]
 
@@ -116,18 +116,18 @@ of rules becomes:
       {
         source: "lib/**",
         target: "lib/**",
-        specifier: require("esmac/lib/relative")
+        specifier: require("esmac/specifiers/relative")
       },
       {
         source: "packages/*/**",
         target: "packages/*/**",
         boundary: 0,
-        specifier: require("esmac/lib/relative")
+        specifier: require("esmac/specifiers/relative")
       },
       {
         source: "**",
         target: "packages/**",
-        specifier: require("esmac/lib/package")
+        specifier: require("esmac/specifiers/package")
       }
     ]
 
@@ -150,7 +150,7 @@ See [`./types.d.ts`](./types.d.ts) for an explanation of the relevant types.
 
 ```javascript
 const esmac = require('esmac')
-const relative = require('esmac/lib/specifiers/relative')
+const relative = require('esmac/specifiers/relative')
 
 const check = esmac([
   {

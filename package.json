@@ -1,8 +1,16 @@
 {
   "name": "esmac",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Control access to ES modules",
   "main": "lib/index.js",
+  "files": [
+    "package.json",
+    "package-lock.json",
+    "README.md",
+    "LICENSE",
+    "types.d.ts",
+    "lib/"
+  ],
   "exports": {
     "./package.json": "./package.json",
     ".": "./lib/index.js",
